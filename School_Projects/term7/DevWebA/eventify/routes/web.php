@@ -15,5 +15,4 @@ Route::resource('tickets', TicketController::class);
  Route::resource('events', EventController::class); 
  // Rutas para gestión de tickets 
  Route::resource('tickets', TicketController::class); }); 
- // Rutas de autenticación generadas por Laravel Breeze (u otro paquete de autenticación) 
- require __DIR__.'/auth.php';
+ 
