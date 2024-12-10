@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
 use App\Models\Ticket;
-use App\Notifications\TicketPurchasedNotification;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    public function index()
+    {
+        $tickets = Ticket::all();
+        return view('tickets.index', compact('tickets'));
+    }
+
+    public function create()
+    {
+        return view('tickets.create');
+    }
+
     public function store(Request $request)
     {
         $ticket = new Ticket();
@@ -17,13 +26,34 @@ class TicketController extends Controller
         $ticket->attendee_email = $request->attendee_email;
         $ticket->save();
 
-        $event = Event::find($request->event_id);
-        
-        // Enviar notificación al usuario
-        $user = auth()->user();
-        $user->notify(new TicketPurchasedNotification($event));
+        return redirect()->route('tickets.index');
+    }
+
+    public function show($id)
+    {
+        $ticket = Ticket::find($id);
+        return view('tickets.show', compact('ticket'));
+    }
+
+    public function edit($id)
+    {
+        $ticket = Ticket::find($id);
+        return view('tickets.edit', compact('ticket'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $ticket = Ticket::find($id);
+        $ticket->attendee_name = $request->attendee_name;
+        $ticket->attendee_email = $request->attendee_email;
+        $ticket->save();
 
         return redirect()->route('tickets.index');
     }
-}
 
+    public function destroy($id)
+    {
+        Ticket::find($id)->delete();
+        return redirect()->route('tickets.index');
+    }
+}
