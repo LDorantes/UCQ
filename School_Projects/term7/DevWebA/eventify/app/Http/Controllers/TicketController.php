@@ -15,7 +15,8 @@ class TicketController extends Controller
 
     public function create()
     {
-        return view('tickets.create');
+        $events = Event::all();
+        return view('tickets.create', compact('events'));
     }
 
     public function store(Request $request)
@@ -38,12 +39,14 @@ class TicketController extends Controller
     public function edit($id)
     {
         $ticket = Ticket::find($id);
-        return view('tickets.edit', compact('ticket'));
+        $events = Event::all();
+        return view('tickets.edit', compact('ticket', 'events'));
     }
 
     public function update(Request $request, $id)
     {
         $ticket = Ticket::find($id);
+        $ticket->event_id = $request->event_id;
         $ticket->attendee_name = $request->attendee_name;
         $ticket->attendee_email = $request->attendee_email;
         $ticket->save();
