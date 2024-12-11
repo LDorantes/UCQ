@@ -1,11 +1,16 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\TicketController;
+
+// Rutas para la página principal
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // Rutas de autenticación
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -19,6 +24,15 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+
+// Agrupamos las rutas que requieren autenticación
+Route::middleware(['auth'])->group(function () {
+    // Rutas para gestión de eventos
+    Route::resource('events', EventController::class);
+
+    // Rutas para gestión de tickets
+    Route::resource('tickets', TicketController::class);
+});
 
 
 Route::get('/', function () {
