@@ -17,13 +17,13 @@ Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);
+Route::get('register', [RegisterUserController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterUserController::class, 'register']);
 
-Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+Route::get('password/reset', [NewPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [NewPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [PasswordResetLinkController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [PasswordResetLinkController::class, 'reset']);
 
 // Agrupamos las rutas que requieren autenticación
 Route::middleware(['auth'])->group(function () {
