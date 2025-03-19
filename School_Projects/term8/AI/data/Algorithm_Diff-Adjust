@@ -1,0 +1,45 @@
+def calculate_performance_score(accuracy, streak_count, reaction_time, error_count):
+    # Weighted average formula
+    performance_score = (
+        0.4 * accuracy +
+        0.3 * streak_count +
+        0.2 * (1 / reaction_time) +  # Inverse of reaction time (faster = better)
+        0.1 * (1 / error_count)      # Inverse of error count (fewer errors = better)
+    )
+    return performance_score
+
+def determine_flow_state(performance_score):
+    if performance_score >= 0.7:
+        return "Boredom"  # Game is too easy
+    elif performance_score <= 0.3:
+        return "Frustration"  # Game is too hard
+    else:
+        return "Flow"  # Game is just right
+
+def adjust_difficulty(current_difficulty, flow_state):
+    if flow_state == "Boredom":
+        return min(current_difficulty + 1, 10)  # Increase difficulty (max 10)
+    elif flow_state == "Frustration":
+        return max(current_difficulty - 1, 1)  # Decrease difficulty (min 1)
+    else:
+        return current_difficulty  # Maintain difficulty
+
+# Example usage
+accuracy = 0.85  # 85% correct
+streak_count = 10  # 5 consecutive correct answers
+reaction_time = 1.5  # 1.2 seconds average response time
+error_count = 3  # 2 errors in the session
+current_difficulty = 7  # Current difficulty level
+
+# Step 1: Calculate performance score
+performance_score = calculate_performance_score(accuracy, streak_count, reaction_time, error_count)
+
+# Step 2: Determine flow state
+flow_state = determine_flow_state(performance_score)
+
+# Step 3: Adjust difficulty
+new_difficulty = adjust_difficulty(current_difficulty, flow_state)
+
+print(f"Performance Score: {performance_score}")
+print(f"Flow State: {flow_state}")
+print(f"New Difficulty: {new_difficulty}")
