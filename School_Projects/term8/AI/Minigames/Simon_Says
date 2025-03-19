@@ -1,0 +1,45 @@
+def memory_challenge_game():
+    print("¡Bienvenido al Juego de Memoria!")
+    sequences = ["A", "B", "C", "D"]
+    score = 0
+    streak = 0
+    errors = 0
+    start_time = time.time()
+
+    sequence = []
+    for _ in range(5):  # 5 rondas
+        sequence.append(random.choice(sequences))
+        print("Memoriza la secuencia:")
+        time.sleep(1)
+        for item in sequence:
+            print(item, end=" ", flush=True)
+            time.sleep(1)
+        clear_screen()
+
+        user_input = input("Repite la secuencia (separada por espacios): ").strip().upper()
+        user_sequence = user_input.split()
+
+        if user_sequence == sequence:
+            print("¡Correcto!")
+            score += 1
+            streak += 1
+        else:
+            print("Incorrecto.")
+            errors += 1
+            streak = 0
+
+    end_time = time.time()
+    reaction_time = end_time - start_time
+    accuracy = score / 5  # 5 rondas en total
+
+    return {
+        'reaction_time': reaction_time,
+        'accuracy': accuracy,
+        'streak_count': streak,
+        'error_count': errors
+    }
+
+# Ejemplo de uso
+data = memory_challenge_game()
+print("Resultados:")
+print(data)

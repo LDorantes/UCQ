@@ -1,0 +1,62 @@
+import random
+import time
+import os
+
+def clear_screen():
+    """Limpia la pantalla para evitar trampas."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def display_pattern(pattern):
+    """Muestra el patrón con efectos visuales."""
+    clear_screen()
+    print("¡Memoriza el patrón!")
+    print("====================")
+    print(f"Patrón: {' '.join(pattern)}") # Se muestra el patrón como una cadena
+    time.sleep(2)  # Mostrar el patrón por 2 segundos
+    clear_screen()
+
+def get_user_input(pattern_length):
+    """Obtiene la entrada del usuario sin mostrarla en pantalla."""
+    return input(f"Repite el patrón: ({pattern_length} elementos):").strip().upper()
+
+def pattern_recognition_game():
+    print("¡Bienvenido al Juego de Reconocimiento de Patrones!")
+    patterns = ["A", "B", "C", "D","1","2","3","4"]
+    score = 0
+    streak = 0
+    errors = 0
+    start_time = time.time()
+
+    sequence =[] #Almacena la secuencia acumulativa
+    for round_number in range(1, 6):  # 5 rondas
+        sequence.append(random.choice(patterns)) #Así se agrega un nuevo elemento al patrón
+        display_pattern(sequence)
+        user_input = get_user_input(len(sequence))
+
+        # Convertimos la entrada del usuario en una lista
+        user_sequence = user_input.split()
+
+        if user_sequence == sequence:
+            print("¡Correcto!")
+            score += 1
+            streak += 1
+        else:
+            print("Incorrecto.")
+            errors += 1
+            streak = 0
+
+    end_time = time.time()
+    reaction_time = end_time - start_time
+    accuracy = score / 5  # 5 rondas en total
+
+    return {
+        'reaction_time': reaction_time,
+        'accuracy': accuracy,
+        'streak_count': streak,
+        'error_count': errors
+    }
+
+# Ejemplo de uso
+data = pattern_recognition_game()
+print("Resultados:")
+print(data)

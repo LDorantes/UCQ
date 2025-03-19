@@ -1,0 +1,49 @@
+import numpy as np
+import tensorflow as tf
+from collections import deque
+
+# Hiperparámetros
+learning_rate = 0.001
+gamma = 0.95  # Factor de descuento
+epsilon = 1.0  # Exploración vs. Explotación
+epsilon_decay = 0.995
+epsilon_min = 0.01
+batch_size = 32
+memory = deque(maxlen=10000)
+
+# Red Neuronal
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(24, input_shape=(4,), activation='relu'),
+    tf.keras.layers.Dense(24, activation='relu'),
+    tf.keras.layers.Dense(3, activation='linear')  # 3 acciones: aumentar, disminuir, mantener
+])
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate), loss='mse')
+
+# Función para elegir una acción
+def choose_action(state):
+    if np.random.rand() <= epsilon:
+        return np.random.randint(0, 3)  # Exploración: acción aleatoria
+    q_values = model.predict(state)
+    return np.argmax(q_values[0])  # Explotación: mejor acción
+
+# Entrenamiento
+def train():
+    if len(memory) < batch_size:
+        return
+    batch = np.random.choice(memory, batch_size, replace=False)
+    states = np.array([x[0] for x in batch])
+    actions = np.array([x[1] for x in batch])
+    rewards = np.array([x[2] for x in batch])
+    next_states = np.array([x[3] for x in batch])
+    dones = np.array([x[4] for x in batch])
+
+    targets = model.predict(states)
+    next_q_values = model.predict(next_states)
+    targets[range(batch_size), actions] = rewards + gamma * np.max(next_q_values, axis=1) * (1 - dones)
+
+    model.fit(states, targets, epochs=1, verbose=0)
+
+# Ejemplo de uso
+state = np.array([[0.85, 5, 1.2, 2]])  # Precisión, rachas, tiempo de reacción, errores
+action = choose_action(state)
+print(f"Acción elegida: {action}")
