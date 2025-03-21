@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 
 public class AuthService {
     public static boolean validarLogin(Usuario usuario) {
-        try (Connection conn = ConexionDB.conectar()) {
+        try (Connection conn = ConexionDB.getConnection()) {
             if (conn == null) return false;
 
             String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
