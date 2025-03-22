@@ -1,31 +1,27 @@
 package services;
 
 import db.ConexionDB;
-import models.Usuario;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class AuthService {
-    public static boolean validarLogin(Usuario usuario) {
-        try (Connection conn = ConexionDB.getConnection()) {
-            if (conn == null) return false;
+    public boolean authenticate(String username, String password) {
+        String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, usuario.getUsername());
-            stmt.setString(2, usuario.getPassword());
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
 
-            ResultSet rs = stmt.executeQuery();
-            boolean loginExitoso = rs.next();
-
-            rs.close();
-            stmt.close();
-            return loginExitoso;
-        } catch (Exception e) {
+            if (rs.next()) {
+                return true; // Usuario autenticado
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false; // Autenticación fallida
     }
 }
