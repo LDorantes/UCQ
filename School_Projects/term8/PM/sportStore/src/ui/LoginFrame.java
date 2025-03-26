@@ -78,6 +78,8 @@ public class LoginFrame extends JFrame {
         });
     }
 
+    
+
     private void authenticate(String username, String password) {
         AuthService authService = new AuthService();
         if (authService.authenticate(username, password)) {

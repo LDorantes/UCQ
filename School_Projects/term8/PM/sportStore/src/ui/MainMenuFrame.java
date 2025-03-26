@@ -1,6 +1,10 @@
 package ui;
 
 import javax.swing.*;
+
+import models.Producto;
+import services.ProductoService;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,14 +65,20 @@ public class MainMenuFrame extends JFrame {
             }
         });
 
+        System.out.println("Creando el botón Productos...");
         productosButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("Botón Productos presionado");
                 JOptionPane.showMessageDialog(MainMenuFrame.this, "Accediendo a Productos");
-                // Aquí puedes abrir la interfaz de productos
+                new ProductosFrame().setVisible(true);
             }
         });
 
+        
+        
+        
+        
         ventasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,11 +141,16 @@ public class MainMenuFrame extends JFrame {
         return button;
     }
 
+    
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
+        System.out.println("Iniciando la aplicación...");
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new MainMenuFrame().setVisible(true);
+                MainMenuFrame frame = new MainMenuFrame();
+                frame.setVisible(true);
+                System.out.println("Ventana principal visible");
             }
         });
     }
