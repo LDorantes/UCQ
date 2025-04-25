@@ -6,7 +6,6 @@ com\sportstore\ui\CarritoFrame.class
 com\sportstore\ui\UsuariosFrame.class
 com\sportstore\ui\LoginFrame$1.class
 com\sportstore\ui\MainMenuFrame.class
-com\sportstore\ui\ProductosFrame$1.class
 com\sportstore\ui\VentasFrame$1.class
 com\sportstore\models\Usuario.class
 com\sportstore\models\Producto.class
