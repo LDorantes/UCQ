@@ -1,0 +1,100 @@
+package com.sportstore.ui;
+
+import com.sportstore.models.DetalleVenta;
+import com.sportstore.models.Producto;
+import com.sportstore.services.DetalleVentaService;
+import com.sportstore.services.ProductoService;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DetalleVentasFrame extends JFrame {
+    private JComboBox<Producto> productoCombo;
+    private JTextField cantidadField;
+    private JTable detallesTable;
+    private DefaultTableModel tableModel;
+    private List<DetalleVenta> detalles;
+
+    public DetalleVentasFrame(int idVenta) {
+        setTitle("Detalles de Venta");
+        setSize(700, 500);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        detalles = new ArrayList<>();
+
+        ProductoService productoService = new ProductoService();
+
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Tabla de detalles
+        tableModel = new DefaultTableModel(new String[]{"Producto", "Cantidad", "Precio Unitario", "Subtotal"}, 0);
+        detallesTable = new JTable(tableModel);
+        panel.add(new JScrollPane(detallesTable), BorderLayout.CENTER);
+
+        // Panel inferior
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
+        productoCombo = new JComboBox<>();
+        for (Producto p : productoService.getAllProductos()) {
+            productoCombo.addItem(p);
+        }
+
+        cantidadField = new JTextField();
+        JButton agregarBtn = new JButton("Agregar");
+        JButton guardarBtn = new JButton("Guardar Detalles");
+
+        inputPanel.add(new JLabel("Producto:"));
+        inputPanel.add(productoCombo);
+        inputPanel.add(new JLabel("Cantidad:"));
+        inputPanel.add(cantidadField);
+
+        JPanel bottomPanel = new JPanel(new FlowLayout());
+        bottomPanel.add(agregarBtn);
+        bottomPanel.add(guardarBtn);
+
+        JPanel southPanel = new JPanel(new BorderLayout());
+        southPanel.add(inputPanel, BorderLayout.NORTH);
+        southPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        panel.add(southPanel, BorderLayout.SOUTH);
+        add(panel);
+
+        agregarBtn.addActionListener(e -> agregarDetalle(idVenta));
+        guardarBtn.addActionListener(e -> guardarDetalles());
+    }
+
+    private void agregarDetalle(int idVenta) {
+        Producto p = (Producto) productoCombo.getSelectedItem();
+        try {
+            int cantidad = Integer.parseInt(cantidadField.getText());
+            double subtotal = p.getPrecio() * cantidad;
+            DetalleVenta detalle = new DetalleVenta(0, idVenta, p.getId(), cantidad, p.getPrecio(), subtotal);
+            detalles.add(detalle);
+            tableModel.addRow(new Object[]{p.getNombre(), cantidad, p.getPrecio(), subtotal});
+            cantidadField.setText("");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Cantidad inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void guardarDetalles() {
+        if (detalles.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay productos agregados.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        boolean exito = new DetalleVentaService().agregarDetallesVenta(detalles);
+        if (exito) {
+            JOptionPane.showMessageDialog(this, "Detalles guardados exitosamente.");
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al guardar detalles.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new DetalleVentasFrame(1).setVisible(true));
+    }
+}
