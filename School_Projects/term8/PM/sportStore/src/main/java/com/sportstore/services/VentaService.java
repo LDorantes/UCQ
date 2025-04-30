@@ -1,11 +1,14 @@
 package com.sportstore.services;
 
-import com.sportstore.db.ConexionDB;
-import com.sportstore.models.Venta;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sportstore.db.ConexionDB;
+import com.sportstore.models.Venta;
 
 public class VentaService {
 
@@ -22,7 +25,7 @@ public class VentaService {
                         rs.getInt("id_venta"),
                         rs.getInt("id_cliente"),
                         rs.getInt("id_empleado"),
-                        rs.getTimestamp("fecha_venta"),
+                        rs.getTimestamp("fecha_venta") != null ? rs.getTimestamp("fecha_venta").toLocalDateTime() : null,
                         rs.getDouble("total")
                 );
                 ventas.add(venta);

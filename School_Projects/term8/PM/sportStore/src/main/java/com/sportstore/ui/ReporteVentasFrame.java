@@ -1,63 +1,47 @@
 package com.sportstore.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
+import com.sportstore.models.ReporteVenta;
+import com.sportstore.services.ReporteService;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
 
 public class ReporteVentasFrame extends JFrame {
-    private JTable ventasTable;
-    private DefaultTableModel tableModel;
-    private JLabel totalFinalLabel;
+    private JTable table;
+    private DefaultTableModel model;
 
     public ReporteVentasFrame() {
         setTitle("Reporte de Ventas");
-        setSize(800, 400);
+        setSize(900, 500);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        String[] columnas = {"Fecha", "Producto", "Total"};
+        String[] columnas = {"Fecha", "Producto", "Cantidad", "Precio Unitario", "Total Parcial", "Total Final"};
+        model = new DefaultTableModel(columnas, 0);
+        table = new JTable(model);
 
-        tableModel = new DefaultTableModel(columnas, 0);
-        ventasTable = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(ventasTable);
-
-        totalFinalLabel = new JLabel("Total Final: $0.00");
-        totalFinalLabel.setFont(new Font("Arial", Font.BOLD, 16));
-
-        JButton calcularTotalButton = new JButton("Calcular Total Final");
-        calcularTotalButton.addActionListener(e -> calcularTotalFinal());
-
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(totalFinalLabel, BorderLayout.WEST);
-        bottomPanel.add(calcularTotalButton, BorderLayout.EAST);
-
+        JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
-        add(bottomPanel, BorderLayout.SOUTH);
 
-        // Datos de ejemplo
-        agregarVenta("2025-04-25", "Balón de fútbol", 500.0);
-        agregarVenta("2025-04-25", "Raqueta de tenis", 800.0);
-        agregarVenta("2025-04-25", "Guantes de boxeo", 350.0);
+        cargarDatos();
     }
 
-    private void agregarVenta(String fecha, String producto, double total) {
-        tableModel.addRow(new Object[]{fecha, producto, total});
-    }
-
-    private void calcularTotalFinal() {
-        double totalFinal = 0;
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            totalFinal += (double) tableModel.getValueAt(i, 2);
+    private void cargarDatos() {
+        ReporteService service = new ReporteService();
+        List<ReporteVenta> ventas = service.getReporteVentas();
+        model.setRowCount(0);
+        for (ReporteVenta v : ventas) {
+            model.addRow(new Object[]{
+                v.getFechaVenta(),
+                v.getProducto(),
+                v.getCantidad(),
+                v.getPrecioUnitario(),
+                v.getTotalParcial(),
+                v.getTotalFinal()
+            });
         }
-        totalFinalLabel.setText("Total Final: $" + String.format("%.2f", totalFinal));
     }
 
     public static void main(String[] args) {

@@ -77,7 +77,7 @@ public class MainMenuFrame extends JFrame {
 
         ventasButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Accediendo a Ventas");
-            new VentasFrame().setVisible(true);
+            new VentasMantenimientoFrame().setVisible(true);
         });
 
         clientesButton.addActionListener(e -> {JOptionPane.showMessageDialog(this, "Accediendo a Clientes");

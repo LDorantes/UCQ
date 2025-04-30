@@ -1,11 +1,14 @@
 package com.sportstore.services;
 
-import com.sportstore.db.ConexionDB;
-import com.sportstore.models.Inventario;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sportstore.db.ConexionDB;
+import com.sportstore.models.Inventario;
 
 public class InventarioService {
 
@@ -35,6 +38,7 @@ public class InventarioService {
         return lista;
     }
 
+    // ✅ Método original con objeto
     public boolean addInventario(Inventario inv) {
         String sql = "INSERT INTO inventario (id_producto, stock_inicial, stock_actual) VALUES (?, ?, ?)";
 
@@ -51,6 +55,11 @@ public class InventarioService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // ✅ Método sobrecargado compatible con el botón agregar
+    public boolean addInventario(int idProducto, int stockInicial) {
+        return addInventario(new Inventario(0, idProducto, stockInicial, stockInicial, null));
     }
 
     public boolean updateInventario(Inventario inv) {

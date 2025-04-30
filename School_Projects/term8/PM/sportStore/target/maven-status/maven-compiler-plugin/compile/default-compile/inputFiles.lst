@@ -9,7 +9,7 @@ C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sports
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\models\Proveedor.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\models\Reportes.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\models\Usuario.java
-C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\models\Ventas.java
+C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\models\Venta.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\services\AuthService.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\services\CategoriaService.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\services\ClienteService.java
@@ -17,6 +17,7 @@ C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sports
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\services\ProductoService.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\services\ProveedorService.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\services\UsuarioService.java
+C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\services\VentaService.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\ui\CarritoFrame.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\ui\CategoriasMantenimientoFrame.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\ui\ClientesMantenimientoFrame.java
@@ -30,3 +31,4 @@ C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sports
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\ui\ReporteVentasFrame.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\ui\UsuariosMantenimientoFrame.java
 C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\ui\VentasFrame.java
+C:\xampp\htdocs\UCQ\School_Projects\term8\PM\sportStore\src\main\java\com\sportstore\ui\VentasMantenimientoFrame.java
