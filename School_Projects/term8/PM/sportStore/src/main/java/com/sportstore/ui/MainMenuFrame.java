@@ -94,7 +94,7 @@ public class MainMenuFrame extends JFrame {
 
         inventarioButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Accediendo a Inventario");
-            new ReporteInventarioFrame().setVisible(true);
+            new InventarioMantenimientoFrame().setVisible(true);
         });
 
         reportesButton.addActionListener(e -> {
@@ -104,7 +104,7 @@ public class MainMenuFrame extends JFrame {
 
         mantenimientosButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Accediendo a Mantenimientos");
-            new UsuariosFrame().setVisible(true);
+            new UsuariosMantenimientoFrame().setVisible(true);
         });
 
         carritoButton.addActionListener(e -> {
