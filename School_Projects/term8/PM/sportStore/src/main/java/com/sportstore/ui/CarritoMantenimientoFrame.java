@@ -1,18 +1,22 @@
 package com.sportstore.ui;
 
+import java.awt.BorderLayout;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 import com.sportstore.models.Carrito;
 import com.sportstore.services.CarritoService;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
 
 public class CarritoMantenimientoFrame extends JFrame {
     private JTable carritoTable;
     private DefaultTableModel tableModel;
     private CarritoService carritoService;
-
+    
+    public CarritoMantenimientoFrame(){}
     public CarritoMantenimientoFrame(int idUsuario) {
         setTitle("Carrito de Compras");
         setSize(600, 400);

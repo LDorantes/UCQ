@@ -109,7 +109,7 @@ public class MainMenuFrame extends JFrame {
 
         carritoButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Accediendo al Carrito");
-            new CarritoFrame().setVisible(true);
+            new CarritoMantenimientoFrame().setVisible(true);
         });
 
         cerrarSesionButton.addActionListener(e -> {

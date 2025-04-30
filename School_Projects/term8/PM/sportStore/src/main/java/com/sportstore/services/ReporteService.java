@@ -13,14 +13,13 @@ public class ReporteService {
 
     public List<ReporteVenta> getReporteVentas() {
         List<ReporteVenta> lista = new ArrayList<>();
-        String sql = """
-            SELECT v.fecha_venta, p.nombre AS producto, dv.cantidad, dv.precio_unitario,
-                   (dv.cantidad * dv.precio_unitario) AS total_parcial, v.total AS total_final
-            FROM ventas v
-            JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
-            JOIN productos p ON dv.id_producto = p.id_producto
-            ORDER BY v.fecha_venta DESC
-        """;
+
+        String sql = "SELECT v.fecha_venta, p.nombre AS producto, dv.cantidad, dv.precio_unitario, " +
+                     "(dv.cantidad * dv.precio_unitario) AS total_parcial, v.total AS total_final " +
+                     "FROM ventas v " +
+                     "JOIN detalle_ventas dv ON v.id_venta = dv.id_venta " +
+                     "JOIN productos p ON dv.id_producto = p.id_producto " +
+                     "ORDER BY v.fecha_venta DESC";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -50,12 +49,11 @@ public class ReporteService {
 
     public List<ReporteInventario> getReporteInventario() {
         List<ReporteInventario> lista = new ArrayList<>();
-        String sql = """
-            SELECT p.id_producto, p.nombre, p.descripcion, i.stock_actual, i.fecha_actualizacion
-            FROM productos p
-            JOIN inventario i ON p.id_producto = i.id_producto
-            ORDER BY p.nombre
-        """;
+
+        String sql = "SELECT p.id_producto, p.nombre, p.descripcion, i.stock_actual, i.fecha_actualizacion " +
+                     "FROM productos p " +
+                     "JOIN inventario i ON p.id_producto = i.id_producto " +
+                     "ORDER BY p.nombre";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
