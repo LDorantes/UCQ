@@ -1,68 +1,58 @@
 package com.sportstore.services;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sportstore.db.ConexionDB;
+import com.sportstore.models.CarritoItem;
 import com.sportstore.models.Venta;
+
+import java.sql.*;
+import java.util.List;
 
 public class VentaService {
 
-    public List<Venta> getAllVentas() {
-        List<Venta> ventas = new ArrayList<>();
-        String sql = "SELECT * FROM ventas";
+    public int registrarVenta(Venta venta, List<CarritoItem> carrito) {
+        String sqlVenta = "INSERT INTO ventas (id_cliente, id_empleado, total) VALUES (?, ?, ?)";
+        String sqlDetalle = "INSERT INTO detalle_ventas (id_venta, id_producto, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)";
+        String sqlUpdateInventario = "UPDATE inventario SET stock_actual = stock_actual - ? WHERE id_producto = ?";
 
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = ConexionDB.getConnection()) {
+            conn.setAutoCommit(false);
 
-            while (rs.next()) {
-                Venta venta = new Venta(
-                        rs.getInt("id_venta"),
-                        rs.getInt("id_cliente"),
-                        rs.getInt("id_empleado"),
-                        rs.getTimestamp("fecha_venta") != null ? rs.getTimestamp("fecha_venta").toLocalDateTime() : null,
-                        rs.getDouble("total")
-                );
-                ventas.add(venta);
+            // Insertar venta
+            PreparedStatement psVenta = conn.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS);
+            psVenta.setInt(1, venta.getIdCliente());
+            psVenta.setInt(2, venta.getIdEmpleado());
+            psVenta.setDouble(3, venta.getTotal());
+            psVenta.executeUpdate();
+
+            ResultSet rs = psVenta.getGeneratedKeys();
+            if (rs.next()) {
+                int idVenta = rs.getInt(1);
+
+                // Insertar detalle
+                for (CarritoItem item : carrito) {
+                    PreparedStatement psDetalle = conn.prepareStatement(sqlDetalle);
+                    psDetalle.setInt(1, idVenta);
+                    psDetalle.setInt(2, item.getProducto().getId());
+                    psDetalle.setInt(3, item.getCantidad());
+                    psDetalle.setDouble(4, item.getProducto().getPrecio());
+                    psDetalle.setDouble(5, item.getSubtotal());
+                    psDetalle.executeUpdate();
+
+                    // Actualizar inventario
+                    PreparedStatement psStock = conn.prepareStatement(sqlUpdateInventario);
+                    psStock.setInt(1, item.getCantidad());
+                    psStock.setInt(2, item.getProducto().getId());
+                    psStock.executeUpdate();
+                }
+
+                conn.commit();
+                return idVenta;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return ventas;
-    }
-
-    public boolean addVenta(Venta venta) {
-        String sql = "INSERT INTO ventas (id_cliente, id_empleado, total) VALUES (?, ?, ?)";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, venta.getIdCliente());
-            pstmt.setInt(2, venta.getIdEmpleado());
-            pstmt.setDouble(3, venta.getTotal());
-
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean deleteVenta(int idVenta) {
-        String sql = "DELETE FROM ventas WHERE id_venta = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idVenta);
-            return pstmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+
+        return -1;
     }
 }
