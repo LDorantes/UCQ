@@ -1,11 +1,11 @@
 com\sportstore\ui\ProductosFrame.class
 com\sportstore\ui\ProductosMantenimientoFrame$1.class
+com\sportstore\ui\UsuariosMantenimientoFrame.class
 com\sportstore\ui\CategoriasMantenimientoFrame.class
 com\sportstore\Main$1.class
 com\sportstore\models\Cliente.class
 main\java\com\sportstore\models\Carrito.class
 main\java\com\sportstore\models\Empleados.class
-com\sportstore\ui\UsuariosFrame.class
 com\sportstore\models\Categoria.class
 com\sportstore\ui\LoginFrame$1.class
 com\sportstore\ui\ClientesMantenimientoFrame$1.class
@@ -17,6 +17,7 @@ com\sportstore\ui\VentasFrame.class
 com\sportstore\Main.class
 com\sportstore\ui\ProductosMantenimientoFrame.class
 com\sportstore\db\ConexionDB.class
+com\sportstore\ui\UsuariosMantenimientoFrame$1.class
 main\java\com\sportstore\models\Reportes.class
 com\sportstore\services\InventarioService.class
 com\sportstore\services\ClienteService.class
@@ -31,6 +32,7 @@ com\sportstore\ui\VentasFrame$1.class
 com\sportstore\models\Usuario.class
 com\sportstore\ui\InventarioMantenimientoFrame.class
 com\sportstore\ui\CategoriasMantenimientoFrame$1.class
+com\sportstore\services\UsuarioService.class
 com\sportstore\ui\LoginFrame$2.class
 com\sportstore\ui\ReporteVentasFrame.class
 com\sportstore\ui\ReporteInventarioFrame.class
