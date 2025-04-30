@@ -6,6 +6,8 @@ com\sportstore\models\Cliente.class
 com\sportstore\ui\UsuariosFrame.class
 com\sportstore\models\Categoria.class
 com\sportstore\ui\LoginFrame$1.class
+com\sportstore\ui\ClientesMantenimientoFrame$1.class
+com\sportstore\ui\ClientesMantenimientoFrame.class
 com\sportstore\models\Proveedor.class
 com\sportstore\ui\ProveedoresFrame.class
 com\sportstore\models\Producto.class
