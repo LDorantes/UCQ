@@ -10,7 +10,7 @@ import java.util.List;
 public class ProveedorService {
 
     public List<Proveedor> getAllProveedores() {
-        List<Proveedor> lista = new ArrayList<>();
+        List<Proveedor> proveedores = new ArrayList<>();
         String sql = "SELECT * FROM proveedores";
 
         try (Connection conn = ConexionDB.getConnection();
@@ -22,20 +22,21 @@ public class ProveedorService {
                     rs.getInt("id_proveedor"),
                     rs.getString("nombre"),
                     rs.getString("contacto"),
-                    rs.getString("telefono")
+                    rs.getString("telefono"),
+                    rs.getString("direccion")
                 );
-                lista.add(p);
+                proveedores.add(p);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return lista;
+        return proveedores;
     }
 
     public boolean addProveedor(Proveedor proveedor) {
-        String sql = "INSERT INTO proveedores (nombre, contacto, telefono) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO proveedores (nombre, contacto, telefono, direccion) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -43,6 +44,44 @@ public class ProveedorService {
             stmt.setString(1, proveedor.getNombre());
             stmt.setString(2, proveedor.getContacto());
             stmt.setString(3, proveedor.getTelefono());
+            stmt.setString(4, proveedor.getDireccion());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteProveedor(int id) {
+        String sql = "DELETE FROM proveedores WHERE id_proveedor = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateProveedor(Proveedor proveedor) {
+        String sql = "UPDATE proveedores SET nombre = ?, contacto = ?, telefono = ?, direccion = ? WHERE id_proveedor = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, proveedor.getNombre());
+            stmt.setString(2, proveedor.getContacto());
+            stmt.setString(3, proveedor.getTelefono());
+            stmt.setString(4, proveedor.getDireccion());
+            stmt.setInt(5, proveedor.getId());
 
             return stmt.executeUpdate() > 0;
 

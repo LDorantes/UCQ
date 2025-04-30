@@ -1,9 +1,19 @@
 package com.sportstore.ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 
 public class MainMenuFrame extends JFrame {
@@ -55,7 +65,10 @@ public class MainMenuFrame extends JFrame {
         add(mainPanel);
 
         // Acciones de los botones
-        categoriasButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Accediendo a Categorías"));
+        categoriasButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Accediendo a Categorías");
+            new CategoriasMantenimientoFrame().setVisible(true);
+        });
 
         productosButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Accediendo a Productos");
@@ -67,11 +80,17 @@ public class MainMenuFrame extends JFrame {
             new VentasFrame().setVisible(true);
         });
 
-        clientesButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Accediendo a Clientes"));
+        clientesButton.addActionListener(e -> {JOptionPane.showMessageDialog(this, "Accediendo a Clientes");
+        new ClientesMantenimientoFrame().setVisible(true);
+        });
 
         empleadosButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Accediendo a Empleados"));
 
-        proveedoresButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Accediendo a Proveedores"));
+        proveedoresButton.addActionListener(e ->{
+            JOptionPane.showMessageDialog(this, "Accediendo a Proveedores");
+            new ProveedoresFrame().setVisible(true);
+        } 
+        );
 
         inventarioButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Accediendo a Inventario");
