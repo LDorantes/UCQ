@@ -94,7 +94,7 @@ public class MainMenuFrame extends JFrame {
 
         inventarioButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Accediendo a Inventario");
-            new ReporteInventarioFrame().setVisible(true);
+            new InventarioMantenimientoFrame().setVisible(true);
         });
 
         reportesButton.addActionListener(e -> {
