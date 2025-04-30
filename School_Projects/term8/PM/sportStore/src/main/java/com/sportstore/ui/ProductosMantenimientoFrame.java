@@ -1,22 +1,15 @@
 package com.sportstore.ui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import com.sportstore.models.Producto;
+import com.sportstore.services.ProductoService;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.util.List;
 
 public class ProductosMantenimientoFrame extends JFrame {
     private JTable productosTable;
@@ -24,6 +17,7 @@ public class ProductosMantenimientoFrame extends JFrame {
     private JTextField nombreField, precioField, stockField, buscarField;
     private JButton agregarButton, editarButton, eliminarButton;
     private TableRowSorter<DefaultTableModel> rowSorter;
+    private ProductoService productoService = new ProductoService();
 
     public ProductosMantenimientoFrame() {
         setTitle("Gestión de Productos");
@@ -31,7 +25,7 @@ public class ProductosMantenimientoFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        String[] columnas = {"Nombre", "Precio", "Stock"};
+        String[] columnas = {"ID", "Nombre", "Precio", "Stock"};
         tableModel = new DefaultTableModel(columnas, 0);
         productosTable = new JTable(tableModel);
         rowSorter = new TableRowSorter<>(tableModel);
@@ -39,13 +33,11 @@ public class ProductosMantenimientoFrame extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(productosTable);
 
-        // Panel de búsqueda
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         buscarField = new JTextField(20);
         searchPanel.add(new JLabel("Buscar producto:"));
         searchPanel.add(buscarField);
 
-        // Panel de formulario
         JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -67,7 +59,6 @@ public class ProductosMantenimientoFrame extends JFrame {
         formPanel.add(agregarButton);
         formPanel.add(editarButton);
 
-        // Panel de botones
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(eliminarButton);
 
@@ -76,28 +67,17 @@ public class ProductosMantenimientoFrame extends JFrame {
         add(formPanel, BorderLayout.EAST);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Acción: Buscar
-        buscarField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                filtrar();
-            }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                filtrar();
-            }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                filtrar();
-            }
+        buscarField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { filtrar(); }
+            public void removeUpdate(DocumentEvent e) { filtrar(); }
+            public void changedUpdate(DocumentEvent e) { filtrar(); }
+
             private void filtrar() {
                 String texto = buscarField.getText();
-                if (texto.trim().length() == 0) {
-                    rowSorter.setRowFilter(null);
-                } else {
-                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, 0)); // columna 0: nombre
-                }
+                rowSorter.setRowFilter(texto.trim().isEmpty() ? null : RowFilter.regexFilter("(?i)" + texto, 1));
             }
         });
 
-        // Acción: Agregar producto
         agregarButton.addActionListener(e -> {
             String nombre = nombreField.getText();
             String precioStr = precioField.getText();
@@ -112,70 +92,76 @@ public class ProductosMantenimientoFrame extends JFrame {
                 double precio = Double.parseDouble(precioStr);
                 int stock = Integer.parseInt(stockStr);
 
-                tableModel.addRow(new Object[]{nombre, precio, stock});
-                limpiarCampos();
+                Producto producto = new Producto(nombre, "", precio, stock, 1, 1, "");
+                if (productoService.addProducto(producto)) {
+                    JOptionPane.showMessageDialog(this, "Producto agregado correctamente.");
+                    dispose(); // Cierra esta ventana
+                    new MainMenuFrame().setVisible(true); // Regresa al menú
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al agregar producto.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Precio o stock inválido.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Acción: Editar producto
         editarButton.addActionListener(e -> {
             int selectedRow = productosTable.getSelectedRow();
             if (selectedRow != -1) {
                 int modelRow = productosTable.convertRowIndexToModel(selectedRow);
-                String nombre = nombreField.getText();
-                String precioStr = precioField.getText();
-                String stockStr = stockField.getText();
-
-                if (nombre.isEmpty() || precioStr.isEmpty() || stockStr.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Por favor llena todos los campos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
+                int id = (int) tableModel.getValueAt(modelRow, 0);
 
                 try {
-                    double precio = Double.parseDouble(precioStr);
-                    int stock = Integer.parseInt(stockStr);
+                    String nombre = nombreField.getText();
+                    double precio = Double.parseDouble(precioField.getText());
+                    int stock = Integer.parseInt(stockField.getText());
 
-                    tableModel.setValueAt(nombre, modelRow, 0);
-                    tableModel.setValueAt(precio, modelRow, 1);
-                    tableModel.setValueAt(stock, modelRow, 2);
-                    limpiarCampos();
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Precio o stock inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+                    Producto producto = new Producto(id, nombre, "", precio, stock, 1, 1, "");
+                    if (productoService.updateProducto(producto)) {
+                        JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
+                        cargarProductos();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error al actualizar producto.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Datos inválidos.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "Selecciona un producto para editar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        // Acción: Eliminar producto
         eliminarButton.addActionListener(e -> {
             int selectedRow = productosTable.getSelectedRow();
             if (selectedRow != -1) {
                 int modelRow = productosTable.convertRowIndexToModel(selectedRow);
-                tableModel.removeRow(modelRow);
-            } else {
-                JOptionPane.showMessageDialog(this, "Selecciona un producto para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                int id = (int) tableModel.getValueAt(modelRow, 0);
+
+                if (productoService.deleteProducto(id)) {
+                    JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+                    cargarProductos();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al eliminar producto.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
-        // Acción: Llenar campos al seleccionar fila
         productosTable.getSelectionModel().addListSelectionListener(event -> {
             int selectedRow = productosTable.getSelectedRow();
             if (selectedRow != -1) {
                 int modelRow = productosTable.convertRowIndexToModel(selectedRow);
-                nombreField.setText(String.valueOf(tableModel.getValueAt(modelRow, 0)));
-                precioField.setText(String.valueOf(tableModel.getValueAt(modelRow, 1)));
-                stockField.setText(String.valueOf(tableModel.getValueAt(modelRow, 2)));
+                nombreField.setText(tableModel.getValueAt(modelRow, 1).toString());
+                precioField.setText(tableModel.getValueAt(modelRow, 2).toString());
+                stockField.setText(tableModel.getValueAt(modelRow, 3).toString());
             }
         });
+
+        cargarProductos();
     }
 
-    private void limpiarCampos() {
-        nombreField.setText("");
-        precioField.setText("");
-        stockField.setText("");
+    private void cargarProductos() {
+        tableModel.setRowCount(0);
+        for (Producto p : productoService.getAllProductos()) {
+            tableModel.addRow(new Object[]{p.getId(), p.getNombre(), p.getPrecio(), p.getStock()});
+        }
     }
 
     public static void main(String[] args) {
